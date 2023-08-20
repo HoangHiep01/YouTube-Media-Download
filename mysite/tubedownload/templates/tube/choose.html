@@ -1,0 +1,70 @@
+{% extends 'tube\base.html' %}
+
+{% block context %}
+{% load static %}
+
+{% if messages %}
+	{% for message in messages %}
+		<p>{{message}}</p>
+	{% endfor %}
+{% endif %}
+
+<h1>Select option</h1>
+
+
+
+<div class="col-md-6 offset-md-3">
+	<form method="POST" action="{% url 'download' %}">
+		<div class="mb-3">
+			{% csrf_token %}
+			<label for="exampleInputLink" class="form-label">Link</label>
+			<input type="text" class="form-control" id="exampleInputLink" aria-describedby="linkHelp" name="link" value="{{link}}" readonly>
+			<div id="linkHelp" class="form-text">Enter Youtube's link</div>
+			<div id="linkHelp" class="form-text">Switch MP3 and MP4 will make an error</div>
+		</div>
+
+		{% if media_type == 'mp4' %}
+		<div class="select">
+			<div class="form-check">
+				<input class="form-check-input disabled" type="radio" name="flexRadioDefault" id="flexRadioMP3" value="mp3">
+				<label class="form-check-label" for="flexRadioMP3">MP3</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input disabled" type="radio" name="flexRadioDefault" id="flexRadioMP4" value="mp4" checked>
+				<label class="form-check-label" for="flexRadioMP4">MP4</label>
+			</div>
+		</div>
+		{% else %}
+		<div class="select">
+			<div class="form-check">
+				<input class="form-check-input disabled" type="radio" name="flexRadioDefault" id="flexRadioMP3" value="mp3" checked>
+				<label class="form-check-label" for="flexRadioMP3">MP3</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input disabled" type="radio" name="flexRadioDefault" id="flexRadioMP4" value="mp4">
+				<label class="form-check-label" for="flexRadioMP4">MP4</label>
+			</div>
+		</div>
+		{% endif %}
+		<h2>List option:</h2>
+		{% if list %}
+		<div class="select-option">
+			{% for item in list %}
+			{% if forloop.first %}
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioItems" id="flexRadioMP3" value="{{item.itag}}" checked>
+				<label class="form-check-label" for="flexRadioMP3">{{item}}</label>
+			</div>
+			{% else %}
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="flexRadioItems" id="flexRadioMP3" value="{{item.itag}}">
+				<label class="form-check-label" for="flexRadioMP3">{{item}}</label>
+			</div>
+			{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+		<button type="submit" class="btn btn-primary" id="submit-link">Download</button>
+	</form>
+</div>
+{% endblock %}
