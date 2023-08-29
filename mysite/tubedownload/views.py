@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from pytube import YouTube
+from .youtube import DownloadMedia
+
 import os
+import json
 
 # Create your views here.
 
@@ -12,21 +15,16 @@ def home(request):
 
 	if request.method == "POST":
 		link = request.POST['youTube-link']
-		media_type = request.POST['flexRadioDefault']
-		yt = YouTube(link)
+		media = DownloadMedia(link)
+		option = media.list_media_option()
 		context = {
 			'link' : link,
-			'media_type' : media_type,
+			'videos' : media.videos,
+			'audios' : media.audios,
+			'media_title': media.youtube.title,
+			'thumbnail': media.youtube.thumbnail_url,
 		}
-		if media_type == 'mp3':
-			list_stream = yt.streams.filter(only_audio=True)
-		elif media_type == 'mp4':
-			list_stream = yt.streams.filter(file_extension='mp4')
-		else:
-			messages.errors(request, "Error")
-			return render(request, "tube/home.html", context)
-		
-		context['list'] = list_stream
+		# print(json.dumps(option, indent=4))
 		return render(request, "tube/choose.html", context)
 
 def download(request):
