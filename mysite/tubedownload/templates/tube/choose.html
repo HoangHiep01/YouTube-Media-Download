@@ -42,7 +42,7 @@
 						{% endfor %} 
 					</ul>
 					<div class="card-body">
-						<a href="#" class="card-link">Card link</a>
+						<input type="submit" name="itag" value="{{video.1.itag}}" class="btn btn-info" id="itag"/>
 					</div>
 				</div>
 			</div>
@@ -50,6 +50,7 @@
 		</div>
 		{% endif %}
 
+		<br>
 
 		<h2>List audio:</h2>
 		{% if audios %}
@@ -71,7 +72,7 @@
 						{% endfor %} 
 					</ul>
 					<div class="card-body">
-						<a href="#" class="card-link">Card link</a>
+						<input type="submit" name="itag" value="{{audio.1.itag}}" class="btn btn-info" id="itag"/>
 					</div>
 				</div>
 			</div>

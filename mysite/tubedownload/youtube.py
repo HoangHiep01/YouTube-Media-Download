@@ -67,22 +67,23 @@ class DownloadMedia():
 		return {'video' : self.videos, 'audio' :  self.audios}
 
 
-	def download(self, itag=None, custom_path="/test/static/media/"):
+	def download(self, itag=None, custom_path="/tubedownload/static/media/"):
 
 		assert itag is not None, "itag required"
 		path = os.getcwd() + custom_path
 		media = self.youtube.streams.get_by_itag(int(itag))
-		set_ext = '.mp3' if media.type == 'audio' else '.mp4'
 
 		output_file = media.download(output_path=path + f'{media.type}/')
+		# print(output_file)
 
-		base, ext = os.path.splitext(output_file)
-		new_file = base + set_ext
-		os.rename(output_file, new_file)
-		with open(new_file, 'rb') as file:
+		# base, ext = os.path.splitext(output_file)
+		# new_file = base + set_ext
+		# os.rename(output_file, new_file)
+		with open(output_file, 'rb') as file:
 			content = file.read()
 
-		return {'file': content, 'title': media.title, 'ext': set_ext}
+		os.remove(output_file)
+		return {'file': content, 'title': media.title, 'ext': media.subtype, 'type': media.type}
 
 
 if __name__ == '__main__':
@@ -92,5 +93,6 @@ if __name__ == '__main__':
 	# print()
 	# print(json.dumps(example.list_audio_option()))
 	print(json.dumps(example.list_media_option(), indent=4))
-	itag = int(input("Itag: "))
-	print(example.download(itag)['title'])
+	# itag = int(input("Itag: "))
+	# print(example.download(itag)['title'])
+	example.download(itag=17)

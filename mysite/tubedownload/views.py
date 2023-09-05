@@ -30,41 +30,29 @@ def home(request):
 def download(request):
 
 	if request.method == "POST":
-		path = os.getcwd() + "/tubedownload/static/media/"
+		# path = os.getcwd() + "/tubedownload/static/media/"
 		link = request.POST['link']
-		media_type = request.POST['flexRadioDefault']
-		itag = int(request.POST['flexRadioItems'])
-		yt = YouTube(link)
-		stream = yt.streams.get_by_itag(itag)
-		if media_type == 'mp3':
-			output_file = stream.download(output_path=path+'audio/')
-			base, ext = os.path.splitext(output_file)
-			new_file = base + '.mp3'
-			os.rename(output_file, new_file)
-			file = open(new_file, 'rb')
-			# response = FileResponse(file)
-			response = HttpResponse(
-				file,
-				headers={
-				"Content-Type": "audio/mpeg",
-				"Content-Disposition": f'attachment; filename="{yt.title}.mp3"',
-				},
-			)
-			os.remove(new_file)
-		elif media_type == 'mp4':
-			output_file = stream.download(output_path=path+'video/')
-			base, ext = os.path.splitext(output_file)
-			new_file = base + '.mp4'
-			os.rename(output_file, new_file)
-			file = open(new_file, 'rb')
-			# response = FileResponse(file)
-			response = HttpResponse(
-				file,
-				headers={
-				"Content-Type": "video/mp4",
-				"Content-Disposition": f'attachment; filename="{yt.title}.mp4"',
-				},
-			)
-			os.remove(new_file)
+		itag = int(request.POST['itag'])
+		media = DownloadMedia(link)
+		result = media.download(itag=itag)
 
+		file_name = result['title']
+		extension = result['ext']
+
+		if result['type'] == 'video':
+			response = HttpResponse(
+					result['file'],
+					headers={
+					"Content-Type": "video/mp4",
+					"Content-Disposition": f'attachment; filename="{file_name}.{extension}"',
+					},
+				)
+		elif result['type'] == 'audio':
+			response = HttpResponse(
+					result['file'],
+					headers={
+					"Content-Type": "audio/mpeg",
+					"Content-Disposition": f'attachment; filename="{file_name}.{extension}"',
+					},
+				)
 	return response
